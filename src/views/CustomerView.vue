@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useCustomerStore } from '@/stores/customer'
 import CustomerForm from '@/components/customers/CustomerForm.vue'
+import BaseSection from '@/components/common/BaseSection.vue'
 import { useAuthStore } from '@/stores/auth'
 import type {
     CreateCustomerRequest,
@@ -200,17 +201,17 @@ onMounted(() => {
             <button class="logout-button" @click="handleLogout">登出</button>
         </header>
 
-        <section class="content-card">
-            <div class="section-header">
-                <div>
-                    <h2>客戶列表</h2>
-                    <p>管理系統中的客戶基本資料</p>
-                </div>
+        <BaseSection>
+            <template #title>
+                <h2 class="customer-section-title">客戶列表</h2>
+                <p class="customer-section-description">管理系統中的客戶基本資料</p>
+            </template>
 
+            <template #actions>
                 <button class="create-button" @click="openCreateForm">
                     新增客戶
                 </button>
-            </div>
+            </template>
 
             <p v-if="errorMessage" class="error-message">
                 {{ errorMessage }}
@@ -252,7 +253,8 @@ onMounted(() => {
                                 {{ updatingId === customer.id ? '修改中...' : '修改' }}
                             </button>
 
-                            <button class="delete-button" :disabled="deletingId === customer.id"
+                            <button class="delete-button"
+                                :disabled="deletingId === customer.id || updatingId === customer.id"
                                 @click="handleDeleteCustomer(customer)">
                                 {{ deletingId === customer.id ? '刪除中...' : '刪除' }}
                             </button>
@@ -260,7 +262,7 @@ onMounted(() => {
                     </tr>
                 </tbody>
             </table>
-        </section>
+        </BaseSection>
 
         <!-- 新增客戶表單 -->
         <CustomerForm v-if="showCreateForm && !creating" mode="create" @submit="handleCreateCustomer"
@@ -320,28 +322,12 @@ onMounted(() => {
     cursor: pointer;
 }
 
-.content-card {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 28px;
-    border-radius: 16px;
-    background: white;
-    box-shadow: 0 8px 30px rgb(15 23 42 / 6%);
-}
-
-.section-header {
-    margin-bottom: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.section-header h2 {
+.customer-section-title {
     margin: 0 0 8px;
     color: #0f172a;
 }
 
-.section-header p {
+.customer-section-description {
     margin: 0;
     color: #64748b;
 }
